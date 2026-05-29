@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-pvc
+  namespace: staging
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-job
+  namespace: staging
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            command:
+            - /bin/sh
+            - -c
+            - echo "Backup at $(date)" >> /backup/backup.log
+            volumeMounts:
+            - name: shared-storage
+              mountPath: /backup    
+          restartPolicy: Never          
+          volumes:
+          - name: shared-storage
+            persistentVolumeClaim:
+              claimName: backup-pvc
