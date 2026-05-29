@@ -23,6 +23,9 @@ Then install nginx ingress controller and test:
 ## Solution
 
 ```
+root@controlplane:~$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+"ingress-nginx" already exists with the same configuration, skipping
+
 root@controlplane:~$ helm upgrade -i ingress-nginx ingress-nginx/ingress-nginx     --namespace kube-system --set controller.service.type=NodePort
 Release "ingress-nginx" does not exist. Installing it now.
 NAME: ingress-nginx
